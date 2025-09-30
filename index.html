@@ -1,164 +1,173 @@
 <!DOCTYPE html>
 <html lang="ca">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>App cuidadors</title>
+  <meta charset="UTF-8">
+  <title>App de cuidadors</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 30px;
+      background-color: #f8f9fa;
+    }
+    h1, h2 { color: #333; }
+    input, button {
+      margin: 5px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover { background-color: #45a049; }
+    .screen { display: none; }
+    .active { display: block; }
+  </style>
 </head>
 <body>
   <h1>Benvingut/da a l'App de cuidadors</h1>
 
-  <!-- Formulari registre -->
-  <h2>Registrar-se</h2>
-  <input type="email" id="registerEmail" placeholder="Email" />
-  <input type="password" id="registerPassword" placeholder="Contrasenya" />
-  <button id="registerBtn">Registrar</button>
-
-  <!-- Formulari login -->
-  <h2>Iniciar sessió</h2>
-  <input type="email" id="loginEmail" placeholder="Email" />
-  <input type="password" id="loginPassword" placeholder="Contrasenya" />
-  <button id="loginBtn">Entrar</button>
-
-  <p id="userInfo"></p>
-  <button id="logoutBtn" style="display:none;">Sortir</button>
-
-  <hr>
-
-  <!-- Afegir tasca -->
-  <div id="taskSection" style="display:none;">
-    <h2>Afegir nova tasca</h2>
-    <input type="text" id="taskInput" placeholder="Escriu una tasca (ex: donar medicació)" />
-    <button id="addTaskBtn">Afegir</button>
-
-    <h2>Llista de tasques</h2>
-    <ul id="taskList"></ul>
+  <!-- Pantalla d'inici -->
+  <div id="screen-inici" class="screen active">
+    <button onclick="showScreen('screen-login')">Iniciar sessió</button>
+    <button onclick="showScreen('screen-register')">Registrar-se</button>
   </div>
 
-  <script type="module">
-    // --- Firebase imports ---
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-analytics.js";
-    import { 
-      getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, 
-      signOut, onAuthStateChanged 
-    } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
-    import { 
-      getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, getDocs 
-    } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+  <!-- Pantalla de registre -->
+  <div id="screen-register" class="screen">
+    <h2>Registrar-se</h2>
+    <input type="email" id="registerEmail" placeholder="Correu" required><br>
+    <input type="password" id="registerPassword" placeholder="Contrasenya" required><br>
+    <button onclick="register()">Registrar</button>
+    <button onclick="showScreen('screen-inici')">Tornar</button>
+  </div>
 
-    // --- Configuració Firebase ---
+  <!-- Pantalla de login -->
+  <div id="screen-login" class="screen">
+    <h2>Iniciar sessió</h2>
+    <input type="email" id="loginEmail" placeholder="Correu" required><br>
+    <input type="password" id="loginPassword" placeholder="Contrasenya" required><br>
+    <button onclick="login()">Entrar</button>
+    <button onclick="showScreen('screen-inici')">Tornar</button>
+  </div>
+
+  <!-- Pantalla idioma -->
+  <div id="screen-idioma" class="screen">
+    <h2>Selecciona l'idioma</h2>
+    <button onclick="guardarIdioma('ca')">Català</button>
+    <button onclick="guardarIdioma('es')">Castellà</button>
+  </div>
+
+  <!-- Pantalla de tasques -->
+  <div id="screen-tasques" class="screen">
+    <h2>Llista de tasques</h2>
+    <input type="text" id="novaTasca" placeholder="Nova tasca">
+    <button onclick="afegirTasca()">Afegir</button>
+    <ul id="llistaTasques"></ul>
+    <br>
+    <button onclick="logout()">Tancar sessió</button>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, addDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+    // Config Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyC_qOG5QASH6kLaUBwBOdei48Z7ZaArTXY",
       authDomain: "cures-1702.firebaseapp.com",
       projectId: "cures-1702",
-      storageBucket: "cures-1702.appspot.com", // 👈 correcte
+      storageBucket: "cures-1702.appspot.com",
       messagingSenderId: "1027744219723",
       appId: "1:1027744219723:web:56e81e5ea9853693b943ce",
       measurementId: "G-8S4HZ39ML5"
     };
 
-    // --- Inicialitzacions ---
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // --- Registrar usuari ---
-    document.getElementById("registerBtn").addEventListener("click", async () => {
+    // Canviar pantalla
+    window.showScreen = function(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    };
+
+    // Registrar usuari
+    window.register = async function() {
       const email = document.getElementById("registerEmail").value;
       const password = document.getElementById("registerPassword").value;
-
       try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-
-        // Crear document inicial de l’usuari a Firestore
-        await setDoc(doc(db, "usuaris", user.uid), {
-          email: user.email,
-          creatEl: new Date()
-        });
-
-        alert("Usuari registrat correctament!");
+        await createUserWithEmailAndPassword(auth, email, password);
+        showScreen('screen-idioma');
       } catch (error) {
         alert("Error al registrar: " + error.message);
       }
-    });
+    };
 
-    // --- Login usuari ---
-    document.getElementById("loginBtn").addEventListener("click", async () => {
+    // Login
+    window.login = async function() {
       const email = document.getElementById("loginEmail").value;
       const password = document.getElementById("loginPassword").value;
-
       try {
         await signInWithEmailAndPassword(auth, email, password);
-        alert("Sessió iniciada correctament!");
+        showScreen('screen-idioma');
       } catch (error) {
-        alert("Error al iniciar sessió: " + error.message);
+        alert("Error a l'iniciar sessió: " + error.message);
       }
-    });
+    };
 
-    // --- Logout usuari ---
-    document.getElementById("logoutBtn").addEventListener("click", async () => {
-      await signOut(auth);
-    });
-
-    // --- Canvis d’estat d’usuari (login/logout) ---
-    onAuthStateChanged(auth, async (user) => {
-      const userInfo = document.getElementById("userInfo");
-      const logoutBtn = document.getElementById("logoutBtn");
-      const taskSection = document.getElementById("taskSection");
-
-      if (user) {
-        userInfo.textContent = "Sessió iniciada com: " + user.email;
-        logoutBtn.style.display = "inline";
-        taskSection.style.display = "block";
-
-        // Carregar tasques de l’usuari
-        carregarTasques(user.uid);
-      } else {
-        userInfo.textContent = "Cap usuari connectat.";
-        logoutBtn.style.display = "none";
-        taskSection.style.display = "none";
-        document.getElementById("taskList").innerHTML = "";
-      }
-    });
-
-    // --- Afegir nova tasca ---
-    document.getElementById("addTaskBtn").addEventListener("click", async () => {
+    // Guardar idioma
+    window.guardarIdioma = async function(idioma) {
       const user = auth.currentUser;
-      if (!user) return alert("Has d’iniciar sessió.");
-
-      const taskText = document.getElementById("taskInput").value;
-      if (taskText.trim() === "") return alert("Escriu una tasca!");
-
-      try {
-        await addDoc(collection(db, "usuaris", user.uid, "tasques"), {
-          text: taskText,
-          creadaEl: new Date()
-        });
-
-        document.getElementById("taskInput").value = "";
-        carregarTasques(user.uid);
-      } catch (error) {
-        alert("Error al guardar la tasca: " + error.message);
+      if (user) {
+        await setDoc(doc(db, "users", user.uid), { idioma }, { merge: true });
+        showScreen('screen-tasques');
+        carregarTasques();
       }
-    });
+    };
 
-    // --- Carregar tasques d’un usuari ---
-    async function carregarTasques(uid) {
-      const taskList = document.getElementById("taskList");
-      taskList.innerHTML = "";
+    // Afegir tasca
+    window.afegirTasca = async function() {
+      const user = auth.currentUser;
+      const text = document.getElementById("novaTasca").value;
+      if (user && text) {
+        try {
+          await addDoc(collection(db, "tasques"), { uid: user.uid, text });
+          document.getElementById("novaTasca").value = "";
+          carregarTasques();
+        } catch (error) {
+          alert("Error al guardar la tasca: " + error.message);
+        }
+      }
+    };
 
-      const q = query(collection(db, "usuaris", uid, "tasques"));
-      const querySnapshot = await getDocs(q);
-
-      querySnapshot.forEach((docSnap) => {
-        const li = document.createElement("li");
-        li.textContent = docSnap.data().text;
-        taskList.appendChild(li);
-      });
+    // Carregar tasques
+    async function carregarTasques() {
+      const user = auth.currentUser;
+      const llista = document.getElementById("llistaTasques");
+      llista.innerHTML = "";
+      if (user) {
+        const q = query(collection(db, "tasques"), where("uid", "==", user.uid));
+        const snapshot = await getDocs(q);
+        snapshot.forEach(docSnap => {
+          const li = document.createElement("li");
+          li.textContent = docSnap.data().text;
+          llista.appendChild(li);
+        });
+      }
     }
+
+    // Logout
+    window.logout = async function() {
+      await signOut(auth);
+      showScreen('screen-inici');
+    };
   </script>
 </body>
 </html>
