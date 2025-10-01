@@ -82,11 +82,15 @@
   </div>
 
   <!-- Pantalla idioma -->
-  <div id="screen-idioma" class="screen">
-    <h2>Selecciona l'idioma</h2>
-    <button onclick="continuarIdioma('ca')">Català</button>
-    <button onclick="continuarIdioma('es')">Castellà</button>
-  </div>
+<div id="screen-idioma" class="screen">
+  <h2>Selecciona l'idioma</h2>
+  <button onclick="seleccionarIdioma('ca')">Català</button>
+  <button onclick="seleccionarIdioma('es')">Castellà</button>
+  <br><br>
+  <button id="btnContinuarIdioma" style="display:none;" onclick="continuarApp()">
+    Continuar
+  </button>
+</div>
 
   <!-- Pantalla de tasques -->
   <div id="screen-tasques" class="screen">
@@ -149,15 +153,24 @@
       }
     };
 
-    // Idioma (ara només avança de pantalla)
-    window.continuarIdioma = async function(idioma) {
-      const user = auth.currentUser;
-      if (user) {
-        await setDoc(doc(db, "users", user.uid), { idioma }, { merge: true });
-        showScreen('screen-tasques');
-        carregarTasques();
-      }
-    };
+    let idiomaSeleccionat = null;
+
+ // Quan l'usuari prem un idioma
+window.seleccionarIdioma = async function(idioma) {
+  idiomaSeleccionat = idioma;
+  const user = auth.currentUser;
+  if (user) {
+    await setDoc(doc(db, "users", user.uid), { idioma }, { merge: true });
+  }
+  // Mostrem el botó continuar
+  document.getElementById("btnContinuarIdioma").style.display = "inline-block";
+};
+
+// Quan prem "Continuar"
+window.continuarApp = function() {
+  showScreen('screen-tasques');
+  carregarTasques();
+};
 
     // Afegir tasca
     window.afegirTasca = async function() {
