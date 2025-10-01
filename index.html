@@ -7,14 +7,21 @@
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      margin: 30px;
+      margin: 0;
       background-color: #f8f9fa;
     }
-    h1, h2 { color: #333; }
+    h1, h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
     input, button {
-      margin: 5px;
-      padding: 10px;
-      font-size: 16px;
+      margin: 10px;
+      padding: 15px;
+      font-size: 20px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      width: 80%;
+      max-width: 400px;
     }
     button {
       background-color: #4CAF50;
@@ -22,13 +29,33 @@
       border: none;
       cursor: pointer;
     }
-    button:hover { background-color: #45a049; }
-    .screen { display: none; }
-    .active { display: block; }
+    button:hover {
+      background-color: #45a049;
+    }
+    .screen {
+      display: none;
+      padding: 30px;
+    }
+    .active {
+      display: block;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: #e9ecef;
+      margin: 10px auto;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 18px;
+      width: 80%;
+      max-width: 400px;
+    }
   </style>
 </head>
 <body>
-  <h1>Benvingut/da a l'App de cuidadors</h1>
+  <h1>App de cuidadors</h1>
 
   <!-- Pantalla d'inici -->
   <div id="screen-inici" class="screen active">
@@ -41,7 +68,7 @@
     <h2>Registrar-se</h2>
     <input type="email" id="registerEmail" placeholder="Correu" required><br>
     <input type="password" id="registerPassword" placeholder="Contrasenya" required><br>
-    <button onclick="register()">Registrar</button>
+    <button onclick="register()">Registrar</button><br>
     <button onclick="showScreen('screen-inici')">Tornar</button>
   </div>
 
@@ -50,21 +77,21 @@
     <h2>Iniciar sessió</h2>
     <input type="email" id="loginEmail" placeholder="Correu" required><br>
     <input type="password" id="loginPassword" placeholder="Contrasenya" required><br>
-    <button onclick="login()">Entrar</button>
+    <button onclick="login()">Entrar</button><br>
     <button onclick="showScreen('screen-inici')">Tornar</button>
   </div>
 
   <!-- Pantalla idioma -->
   <div id="screen-idioma" class="screen">
     <h2>Selecciona l'idioma</h2>
-    <button onclick="guardarIdioma('ca')">Català</button>
-    <button onclick="guardarIdioma('es')">Castellà</button>
+    <button onclick="continuarIdioma('ca')">Català</button>
+    <button onclick="continuarIdioma('es')">Castellà</button>
   </div>
 
   <!-- Pantalla de tasques -->
   <div id="screen-tasques" class="screen">
     <h2>Llista de tasques</h2>
-    <input type="text" id="novaTasca" placeholder="Nova tasca">
+    <input type="text" id="novaTasca" placeholder="Escriu una tasca">
     <button onclick="afegirTasca()">Afegir</button>
     <ul id="llistaTasques"></ul>
     <br>
@@ -122,8 +149,8 @@
       }
     };
 
-    // Guardar idioma
-    window.guardarIdioma = async function(idioma) {
+    // Idioma (ara només avança de pantalla)
+    window.continuarIdioma = async function(idioma) {
       const user = auth.currentUser;
       if (user) {
         await setDoc(doc(db, "users", user.uid), { idioma }, { merge: true });
