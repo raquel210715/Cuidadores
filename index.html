@@ -2,245 +2,190 @@
 <html lang="ca">
 <head>
   <meta charset="UTF-8">
-  <title>App de cuidadors</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App de Salut</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      text-align: center;
+      background: #f5f5f5;
       margin: 0;
-      background-color: #f8f9fa;
-    }
-    h1, h2 {
-      color: #333;
-      margin-bottom: 20px;
-    }
-    input, button {
-      margin: 10px;
-      padding: 15px;
-      font-size: 20px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      width: 80%;
-      max-width: 400px;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
+      padding: 0;
+      font-size: 18px; /* més gran */
     }
     .screen {
       display: none;
-      padding: 30px;
+      padding: 20px;
     }
     .active {
       display: block;
     }
-    ul {
-      list-style: none;
-      padding: 0;
+    h2 {
+      margin-top: 0;
     }
-    li {
-      background: #e9ecef;
-      margin: 10px auto;
-      padding: 15px;
-      border-radius: 8px;
+    input, button, select {
       font-size: 18px;
-      width: 80%;
-      max-width: 400px;
-    }
-    /* zona debug */
-    #debug {
-      position: fixed;
-      bottom: 0;
-      left: 0;
+      padding: 10px;
+      margin: 8px 0;
       width: 100%;
-      background: #222;
+      box-sizing: border-box;
+    }
+    button {
+      background: #007bff;
       color: white;
-      padding: 5px;
-      font-size: 12px;
-      z-index: 9999;
+      border: none;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .task-section {
+      background: white;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
   </style>
 </head>
 <body>
-  <h1>App de cuidadors</h1>
 
-  <!-- Pantalla d'inici -->
-  <div id="screen-inici" class="screen active">
-    <button onclick="showScreen('screen-login')">Iniciar sessió</button>
-    <button onclick="showScreen('screen-register')">Registrar-se</button>
+  <!-- Pantalla Login -->
+  <div id="screen-login" class="screen active">
+    <h2>Inicia sessió</h2>
+    <input type="email" id="login-email" placeholder="Correu electrònic">
+    <input type="password" id="login-password" placeholder="Contrasenya">
+    <button id="login-btn">Iniciar sessió</button>
+    <button id="register-btn">Registrar-se</button>
   </div>
 
-  <!-- Pantalla de registre -->
-  <div id="screen-register" class="screen">
-    <h2>Registrar-se</h2>
-    <input type="email" id="registerEmail" placeholder="Correu" required><br>
-    <input type="password" id="registerPassword" placeholder="Contrasenya" required><br>
-    <button onclick="register()">Registrar</button><br>
-    <button onclick="showScreen('screen-inici')">Tornar</button>
-  </div>
-
-  <!-- Pantalla de login -->
-  <div id="screen-login" class="screen">
-    <h2>Iniciar sessió</h2>
-    <input type="email" id="loginEmail" placeholder="Correu" required><br>
-    <input type="password" id="loginPassword" placeholder="Contrasenya" required><br>
-    <button onclick="login()">Entrar</button><br>
-    <button onclick="showScreen('screen-inici')">Tornar</button>
-  </div>
-
-  <!-- Pantalla idioma -->
+  <!-- Pantalla Idioma -->
   <div id="screen-idioma" class="screen">
-    <h2>Selecciona l'idioma</h2>
-    <button onclick="seleccionarIdioma('ca')">Català</button>
-    <button onclick="seleccionarIdioma('es')">Castellà</button>
-    <br><br>
-    <button id="btnContinuarIdioma" style="display:none;" onclick="continuarApp()">
-      Continuar
-    </button>
+    <h2>Escull l’idioma</h2>
+    <select id="idioma">
+      <option value="ca">Català</option>
+      <option value="es">Castellà</option>
+      <option value="en">Anglès</option>
+    </select>
+    <button id="idioma-continue">Continuar</button>
   </div>
 
-  <!-- Pantalla de tasques -->
+  <!-- Pantalla Tasques -->
   <div id="screen-tasques" class="screen">
-    <h2>Llista de tasques</h2>
-    <input type="text" id="novaTasca" placeholder="Escriu una tasca">
-    <button onclick="afegirTasca()">Afegir</button>
-    <ul id="llistaTasques"></ul>
-    <br>
-    <button onclick="logout()">Tancar sessió</button>
+    <h2>Tasques del dia</h2>
+
+    <div class="task-section">
+      <h3>Medicacions</h3>
+      <ul id="medicacions-list">
+        <li>Paracetamol 1g – Matí</li>
+        <li>Ibuprofèn 600mg – Vespre</li>
+      </ul>
+    </div>
+
+    <div class="task-section">
+      <h3>Cures</h3>
+      <ul id="cures-list">
+        <li>Canviar bena cada 12h</li>
+      </ul>
+    </div>
+
+    <div class="task-section">
+      <h3>Cites mèdiques</h3>
+      <ul id="cites-list">
+        <li>Visita cardiologia – 12/10/2025</li>
+      </ul>
+    </div>
+
+    <div class="task-section">
+      <h3>Condicions / Malalties</h3>
+      <ul id="condicions-list">
+        <li>Hipertensió</li>
+        <li>Diabetis</li>
+      </ul>
+    </div>
   </div>
 
-  <!-- Contenidor per missatges debug -->
-  <div id="debug">Debug actiu...</div>
-
-  <!-- Firebase SDK -->
+  <!-- Firebase -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, addDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { 
+      getAuth, 
+      signInWithEmailAndPassword, 
+      createUserWithEmailAndPassword, 
+      onAuthStateChanged, 
+      setPersistence, 
+      browserLocalPersistence 
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      setDoc, 
+      doc 
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // Config Firebase
+    // Configura el teu Firebase
     const firebaseConfig = {
-      apiKey: "AIzaSyC_qOG5QASH6kLaUBwBOdei48Z7ZaArTXY",
-      authDomain: "cures-1702.firebaseapp.com",
-      projectId: "cures-1702",
-      storageBucket: "cures-1702.appspot.com",
-      messagingSenderId: "1027744219723",
-      appId: "1:1027744219723:web:56e81e5ea9853693b943ce",
-      measurementId: "G-8S4HZ39ML5"
+      apiKey: "EL_TEU_API_KEY",
+      authDomain: "EL_TEU_PROJECTE.firebaseapp.com",
+      projectId: "EL_TEU_PROJECTE",
+      storageBucket: "EL_TEU_PROJECTE.appspot.com",
+      messagingSenderId: "EL_TEU_ID",
+      appId: "EL_TEU_APP_ID"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Funció debug visible
-    function debug(msg) {
-      document.getElementById("debug").innerText = msg;
-    }
+    // Persistència total
+    setPersistence(auth, browserLocalPersistence);
 
-    // Canviar pantalla
-    window.showScreen = function(id) {
+    // Canvi de pantalla
+    function showScreen(id) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
-      debug("Pantalla mostrada: " + id);
-    };
-
-    // Registrar usuari
-    window.register = async function() {
-      const email = document.getElementById("registerEmail").value;
-      const password = document.getElementById("registerPassword").value;
-      debug("Intentant registrar amb " + email);
-      try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        debug("Usuari registrat correctament");
-        showScreen('screen-idioma');
-      } catch (error) {
-        debug("Error registrar: " + error.message);
-        alert("Error al registrar: " + error.message);
-      }
-    };
+    }
 
     // Login
-    window.login = async function() {
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
-      debug("Intentant login amb " + email);
+    document.getElementById('login-btn').addEventListener('click', async () => {
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
       try {
         await signInWithEmailAndPassword(auth, email, password);
-        debug("Login correcte");
-        showScreen('screen-idioma');
       } catch (error) {
-        debug("Error login: " + error.message);
-        alert("Error a l'iniciar sessió: " + error.message);
+        alert("Error: " + error.message);
       }
-    };
+    });
 
-    let idiomaSeleccionat = null;
+    // Registre
+    document.getElementById('register-btn').addEventListener('click', async () => {
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+      } catch (error) {
+        alert("Error: " + error.message);
+      }
+    });
 
-    // Quan l'usuari prem un idioma
-    window.seleccionarIdioma = async function(idioma) {
-      idiomaSeleccionat = idioma;
-      debug("Idioma seleccionat: " + idioma);
+    // Continuar idioma
+    document.getElementById('idioma-continue').addEventListener('click', async () => {
+      const idioma = document.getElementById('idioma').value;
       const user = auth.currentUser;
       if (user) {
         await setDoc(doc(db, "users", user.uid), { idioma }, { merge: true });
-        debug("Idioma guardat a Firestore");
+        showScreen('screen-tasques');
       }
-      document.getElementById("btnContinuarIdioma").style.display = "inline-block";
-    };
+    });
 
-    // Quan prem "Continuar"
-    window.continuarApp = function() {
-      debug("Continuant cap a tasques");
-      showScreen('screen-tasques');
-      carregarTasques();
-    };
-
-    // Afegir tasca
-    window.afegirTasca = async function() {
-      const user = auth.currentUser;
-      const text = document.getElementById("novaTasca").value;
-      debug("Afegint tasca: " + text);
-      if (user && text) {
-        try {
-          await addDoc(collection(db, "tasques"), { uid: user.uid, text });
-          document.getElementById("novaTasca").value = "";
-          carregarTasques();
-        } catch (error) {
-          debug("Error guardar tasca: " + error.message);
-          alert("Error al guardar la tasca: " + error.message);
-        }
-      }
-    };
-
-    // Carregar tasques
-    window.carregarTasques = async function() {
-      const user = auth.currentUser;
-      const llista = document.getElementById("llistaTasques");
-      llista.innerHTML = "";
+    // Quan l'usuari ja està loguejat
+    onAuthStateChanged(auth, (user) => {
       if (user) {
-        const q = query(collection(db, "tasques"), where("uid", "==", user.uid));
-        const snapshot = await getDocs(q);
-        snapshot.forEach(docSnap => {
-          const li = document.createElement("li");
-          li.textContent = docSnap.data().text;
-          llista.appendChild(li);
-        });
-        debug("Tasques carregades: " + snapshot.size);
+        showScreen('screen-idioma');
+      } else {
+        showScreen('screen-login');
       }
-    };
+    });
 
-    // Logout
-    window.logout = async function() {
-      await signOut(auth);
-      debug("Sessió tancada");
-      showScreen('screen-inici');
-    };
   </script>
 </body>
 </html>
