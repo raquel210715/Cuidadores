@@ -1,221 +1,129 @@
 <!DOCTYPE html>
 <html lang="ca">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>App Cuidadors - Prototip</title>
+  <meta charset="UTF-8">
+  <title>App de cuidadors</title>
   <style>
-    /* Estils pensats per mòbil: grans, clars i contrastats */
-    :root{
-      --bg:#f6f8fb;
-      --card:#fff;
-      --accent:#2f7bdc;
-      --accent-2:#48b37d;
-      --danger:#e06363;
-      --muted:#6b7785;
-      --radius:14px;
-      font-family: Inter, Roboto, Arial, sans-serif;
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      background-color: #f8f9fa;
     }
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:#122029}
-    .wrap{max-width:980px;margin:12px auto;padding:14px}
-    header{display:flex;align-items:center;justify-content:center;padding:8px}
-    h1{margin:0;font-size:30px}
-    .screen{display:none;background:transparent;padding:18px}
-    .active{display:block}
-    .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 8px 24px rgba(20,30,40,0.06);margin-bottom:16px}
-    /* botons grans */
-    button, input, select, textarea{font-size:18px}
-    input, textarea, select{
-      width:100%;padding:14px;border-radius:10px;border:1px solid #e6eef7;background:#fbfdff;margin-top:8px
+    h1, h2 {
+      color: #333;
+      margin-bottom: 20px;
     }
-    .row{display:flex;gap:10px}
-    .col{flex:1}
-    .btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:10px;background:var(--accent);color:white;border:0;font-weight:700;cursor:pointer}
-    .btn.secondary{background:var(--accent-2)}
-    .btn.ghost{background:transparent;border:2px solid rgba(47,123,220,0.12);color:var(--accent)}
-    .muted{color:var(--muted);font-size:14px}
-    .big-btn{width:100%;padding:16px;font-size:20px;border-radius:12px}
-    .list{margin-top:12px}
-    .list-item{background:#f3f6fb;border-radius:10px;padding:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
-    .small{font-size:13px;color:var(--muted)}
-    label{display:block;margin-top:8px;font-weight:600}
-    .flex{display:flex;align-items:center;gap:8px}
-    .pill{padding:6px 10px;border-radius:999px;background:#eef3ff;color:var(--accent);font-weight:600}
-    .input-inline{display:flex;gap:8px}
-    .input-inline input{flex:1}
-    .top-actions{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-    .danger{background:var(--danger);color:white}
-    @media(min-width:720px){
-      h1{font-size:34px}
-      .wrap{padding:24px}
+    input, button {
+      margin: 10px;
+      padding: 15px;
+      font-size: 20px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      width: 80%;
+      max-width: 400px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .screen {
+      display: none;
+      padding: 30px;
+    }
+    .active {
+      display: block;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: #e9ecef;
+      margin: 10px auto;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 18px;
+      width: 80%;
+      max-width: 400px;
+    }
+    /* zona debug */
+    #debug {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #222;
+      color: white;
+      padding: 5px;
+      font-size: 12px;
+      z-index: 9999;
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header><h1>App de cuidadors</h1></header>
+  <h1>App de cuidadors</h1>
 
-    <!-- -------------------- PANTALLA INICI -------------------- -->
-    <div id="screen-inici" class="screen active">
-      <div class="card center">
-        <div style="margin-bottom:12px">
-          <button class="btn big-btn" onclick="showScreen('screen-login')">Iniciar sessió</button>
-        </div>
-        <div>
-          <button class="btn big-btn" onclick="showScreen('screen-register')">Registrar-se</button>
-        </div>
-        <p class="muted" style="margin-top:12px">Si ja has iniciat sessió prèviament, automàticament et portarem al teu panell.</p>
-      </div>
-    </div>
-
-    <!-- -------------------- PANTALLA REGISTER -------------------- -->
-    <div id="screen-register" class="screen">
-      <div class="card">
-        <h2>Registrar-se</h2>
-        <div class="muted">Crea un compte amb el teu correu</div>
-        <label>Correu</label>
-        <input id="registerEmail" type="email" placeholder="correu@exemple.com" />
-        <label>Contrasenya</label>
-        <input id="registerPassword" type="password" placeholder="Mínim 6 caràcters" />
-        <div style="height:10px"></div>
-        <div class="row">
-          <div class="col"><button class="btn" onclick="register()">Registrar</button></div>
-          <div class="col"><button class="btn ghost" onclick="showScreen('screen-inici')">Tornar</button></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- -------------------- PANTALLA LOGIN -------------------- -->
-    <div id="screen-login" class="screen">
-      <div class="card">
-        <h2>Iniciar sessió</h2>
-        <div class="muted">Accedeix amb el teu correu</div>
-        <label>Correu</label>
-        <input id="loginEmail" type="email" placeholder="correu@exemple.com" />
-        <label>Contrasenya</label>
-        <input id="loginPassword" type="password" placeholder="Contrasenya" />
-        <div style="height:10px"></div>
-        <div class="row">
-          <div class="col"><button class="btn" onclick="login()">Entrar</button></div>
-          <div class="col"><button class="btn ghost" onclick="showScreen('screen-inici')">Tornar</button></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- -------------------- PANTALLA IDIOMA (1a vegada) -------------------- -->
-    <div id="screen-idioma" class="screen">
-      <div class="card">
-        <h2>Selecciona l'idioma</h2>
-        <div class="muted">Afectarà com es mostren alguns textos (es pot canviar després)</div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:14px">
-          <button class="btn" style="flex:1" onclick="seleccionarIdioma('ca')">Català</button>
-          <button class="btn secondary" style="flex:1" onclick="seleccionarIdioma('es')">Castellà</button>
-        </div>
-        <div style="height:12px"></div>
-        <button id="btnContinuarIdioma" class="btn big-btn" style="display:none" onclick="continuarDespresIdioma()">Continuar</button>
-      </div>
-    </div>
-
-    <!-- -------------------- PANTALLA CONFIGURACIÓ INICIAL -------------------- -->
-    <div id="screen-config" class="screen">
-      <div class="card">
-        <h2>Configuració inicial</h2>
-        <div class="muted">Afegeix medicacions, cures, cites i marca condicions. Pots desar i continuar.</div>
-
-        <!-- Medicacions -->
-        <label>Afegir medicació (nom, dosi, hora)</label>
-        <div class="input-inline">
-          <input id="medNom" placeholder="Nom (p. ex. Paracetamol)" />
-          <input id="medDosi" placeholder="Dosi (p. ex. 500 mg)" />
-          <input id="medHora" placeholder="Hora (HH:MM)" />
-          <button class="btn" onclick="afegirMedicacio()">+</button>
-        </div>
-        <div id="medList" class="list"></div>
-
-        <!-- Cures -->
-        <label style="margin-top:12px">Afegir cura (nom, periodicitat)</label>
-        <div class="input-inline">
-          <input id="curaNom" placeholder="Cura (p. ex. Canviar apòsit)" />
-          <select id="curaFreq">
-            <option value="diari">Diari</option>
-            <option value="setmanal">Setmanal</option>
-            <option value="mensual">Mensual</option>
-          </select>
-          <button class="btn" onclick="afegirCura()">+</button>
-        </div>
-        <div id="curaList" class="list"></div>
-
-        <!-- Cites -->
-        <label style="margin-top:12px">Afegir cita (data, hora, lloc)</label>
-        <div class="input-inline">
-          <input id="citaData" type="date" />
-          <input id="citaHora" type="time" />
-          <input id="citaLloc" placeholder="Lloc (p. ex. CAP)" />
-          <button class="btn" onclick="afegirCita()">+</button>
-        </div>
-        <div id="citaList" class="list"></div>
-
-        <!-- Condicions -->
-        <label style="margin-top:12px">Marca condicions / malalties</label>
-        <div id="conditionsGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px">
-          <!-- es generarà dinàmicament -->
-        </div>
-
-        <div style="height:16px"></div>
-        <div class="row">
-          <div class="col"><button class="btn" onclick="guardarConfiguracio()">Desar i continuar</button></div>
-          <div class="col"><button class="btn ghost" onclick="showScreen('screen-idioma')">Enrere</button></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- -------------------- PANTALLA PANELL DEL DIA -------------------- -->
-    <div id="screen-panel" class="screen">
-      <div class="card">
-        <div class="top-actions">
-          <div>
-            <span class="pill" id="pill-user">—</span>
-            <div class="small" id="pill-date"></div>
-          </div>
-          <div>
-            <button class="btn ghost" onclick="showScreen('screen-config')">Edita configuració</button>
-            <button class="btn danger" onclick="logout()">Tancar sessió</button>
-          </div>
-        </div>
-
-        <h3 style="margin-top:8px">Medicacions d'avui</h3>
-        <div id="panel-medicacions" class="list"></div>
-
-        <h3 style="margin-top:10px">Cures previstes</h3>
-        <div id="panel-cures" class="list"></div>
-
-        <h3 style="margin-top:10px">Cites pròximes</h3>
-        <div id="panel-cites" class="list"></div>
-
-        <h3 style="margin-top:10px">Hàbits / Registres</h3>
-        <div id="panel-habits" class="list"></div>
-
-        <div class="muted" style="margin-top:12px">Marca com a fet i, si cal, afegeix el valor (p.ex. TA 145/65)</div>
-      </div>
-    </div>
-
+  <!-- Pantalla d'inici -->
+  <div id="screen-inici" class="screen active">
+    <button onclick="showScreen('screen-login')">Iniciar sessió</button>
+    <button onclick="showScreen('screen-register')">Registrar-se</button>
   </div>
 
-  <!-- ---------- Código JavaScript (Firebase + lógica) ---------- -->
-  <script type="module">
-    /* ---------- Imports Firebase (modular) ---------- */
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-    import {
-      getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-      signOut, onAuthStateChanged, setPersistence, browserLocalPersistence
-    } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
-    import {
-      getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs,
-      query, where, orderBy, deleteDoc, updateDoc, serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+  <!-- Pantalla de registre -->
+  <div id="screen-register" class="screen">
+    <h2>Registrar-se</h2>
+    <input type="email" id="registerEmail" placeholder="Correu" required><br>
+    <input type="password" id="registerPassword" placeholder="Contrasenya" required><br>
+    <button onclick="register()">Registrar</button><br>
+    <button onclick="showScreen('screen-inici')">Tornar</button>
+  </div>
 
-    /* ---------- Config Firebase: posa aquí el teu firebaseConfig ---------- */
+  <!-- Pantalla de login -->
+  <div id="screen-login" class="screen">
+    <h2>Iniciar sessió</h2>
+    <input type="email" id="loginEmail" placeholder="Correu" required><br>
+    <input type="password" id="loginPassword" placeholder="Contrasenya" required><br>
+    <button onclick="login()">Entrar</button><br>
+    <button onclick="showScreen('screen-inici')">Tornar</button>
+  </div>
+
+  <!-- Pantalla idioma -->
+  <div id="screen-idioma" class="screen">
+    <h2>Selecciona l'idioma</h2>
+    <button onclick="seleccionarIdioma('ca')">Català</button>
+    <button onclick="seleccionarIdioma('es')">Castellà</button>
+    <br><br>
+    <button id="btnContinuarIdioma" style="display:none;" onclick="continuarApp()">
+      Continuar
+    </button>
+  </div>
+
+  <!-- Pantalla de tasques -->
+  <div id="screen-tasques" class="screen">
+    <h2>Llista de tasques</h2>
+    <input type="text" id="novaTasca" placeholder="Escriu una tasca">
+    <button onclick="afegirTasca()">Afegir</button>
+    <ul id="llistaTasques"></ul>
+    <br>
+    <button onclick="logout()">Tancar sessió</button>
+  </div>
+
+  <!-- Contenidor per missatges debug -->
+  <div id="debug">Debug actiu...</div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, addDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+    // Config Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyC_qOG5QASH6kLaUBwBOdei48Z7ZaArTXY",
       authDomain: "cures-1702.firebaseapp.com",
@@ -226,424 +134,113 @@
       measurementId: "G-8S4HZ39ML5"
     };
 
-    /* ---------- Inicialitza ---------- */
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    // Persistència total:
-    setPersistence(auth, browserLocalPersistence).catch(e => console.warn('setPersistence:', e));
     const db = getFirestore(app);
 
-    /* ---------- Variables i mapes útils ---------- */
-    // Condicions per mostrar al checklist. Edita fàcilment aquí.
-    const CONDITIONS = [
-      { key: 'hta', label: 'HTA (Hipertensió arterial)' },
-      { key: 'diabetes', label: 'Diabetis' },
-      { key: 'demencia', label: 'Demència' },
-      { key: 'cardio', label: 'Malaltia cardiovascular' },
-      { key: 'mobilitat', label: 'Limitació mobilitat' },
-      { key: 'respiratori', label: 'Malaltia respiratòria' }
-    ];
+    // Funció debug visible
+    function debug(msg) {
+      document.getElementById("debug").innerText = msg;
+    }
 
-    // Map de condicions -> hàbits o cures relacionades (es poden ampliar)
-    const CONDITION_MAP = {
-      hta: { habits: [{ id:'ta','label':'Prendre TA' }], cares: ['Control de sal'] },
-      diabetes: { habits: [{ id:'glicemia','label':'Glicèmia' }], cares: ['Control dieta'] },
-      demencia: { habits: [{ id:'estat','label':'Registrar estat d\\'ànim' }], cares: ['Recordatoris'] },
-      cardio: { habits: [{ id:'ta','label':'Prendre TA' }], cares: ['Repos'] },
-      mobilitat: { habits: [{ id:'exercici','label':'Exercici' }], cares: ['Suport per caminar'] },
-      respiratori: { habits: [{ id:'saturacio','label':'Saturació O₂' }], cares: ['Exercicis respiratoris'] }
+    // Canviar pantalla
+    window.showScreen = function(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      debug("Pantalla mostrada: " + id);
     };
 
-    // Estat en memòria (temporal)
-    let currentUser = null;
-    let profile = null; // object: idioma, configDone
+    // Registrar usuari
+    window.register = async function() {
+      const email = document.getElementById("registerEmail").value;
+      const password = document.getElementById("registerPassword").value;
+      debug("Intentant registrar amb " + email);
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        debug("Usuari registrat correctament");
+        showScreen('screen-idioma');
+      } catch (error) {
+        debug("Error registrar: " + error.message);
+        alert("Error al registrar: " + error.message);
+      }
+    };
+
+    // Login
+    window.login = async function() {
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+      debug("Intentant login amb " + email);
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        debug("Login correcte");
+        showScreen('screen-idioma');
+      } catch (error) {
+        debug("Error login: " + error.message);
+        alert("Error a l'iniciar sessió: " + error.message);
+      }
+    };
+
     let idiomaSeleccionat = null;
 
-    /* ---------- Helpers UI ---------- */
-    function showScreen(id) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      const el = document.getElementById(id);
-      if (el) el.classList.add('active');
-    }
-    function $(id){ return document.getElementById(id); }
-    function fechaHoyISO(){ return new Date().toISOString().split('T')[0]; }
-    function now(){ return new Date(); }
-
-    /* ---------- Autenticació: registre / login / estat ---------- */
-    window.register = async function(){
-      const email = $('registerEmail').value.trim();
-      const password = $('registerPassword').value;
-      if (!email || password.length < 6){ alert('Email vàlid i contrasenya (min 6)'); return; }
-      try {
-        const cred = await createUserWithEmailAndPassword(auth, email, password);
-        currentUser = cred.user;
-        // crea perfil bàsic (idioma per defecte ca, configuracioFeta false)
-        await setDoc(doc(db, 'users', currentUser.uid), { idioma: 'ca', configuracioFeta: false, createdAt: serverTimestamp() });
-        profile = { idioma:'ca', configuracioFeta:false };
-        idiomaSeleccionat = 'ca';
-        // anar a idioma per segona pantalla (per coherència)
-        showScreen('screen-idioma');
-      } catch (e) {
-        alert('Error registrar: ' + (e.message || e));
+    // Quan l'usuari prem un idioma
+    window.seleccionarIdioma = async function(idioma) {
+      idiomaSeleccionat = idioma;
+      debug("Idioma seleccionat: " + idioma);
+      const user = auth.currentUser;
+      if (user) {
+        await setDoc(doc(db, "users", user.uid), { idioma }, { merge: true });
+        debug("Idioma guardat a Firestore");
       }
+      document.getElementById("btnContinuarIdioma").style.display = "inline-block";
     };
 
-    window.login = async function(){
-      const email = $('loginEmail').value.trim();
-      const password = $('loginPassword').value;
-      if (!email || password.length < 6){ alert('Email i contrasenya.'); return; }
-      try {
-        const cred = await signInWithEmailAndPassword(auth, email, password);
-        currentUser = cred.user;
-        // carregar perfil (si existeix)
-        const pDoc = await getDoc(doc(db,'users',currentUser.uid));
-        if (pDoc.exists()) profile = pDoc.data();
-        else { profile = { idioma:'ca', configuracioFeta:false }; await setDoc(doc(db,'users',currentUser.uid), profile); }
-        // si la configuració ja està feta → anem al panell, si no → idioma/config
-        if (profile.configuracioFeta) {
-          idiomaSeleccionat = profile.idioma || 'ca';
-          showScreen('screen-panel');
-          renderPanel();
-        } else {
-          showScreen('screen-idioma');
+    // Quan prem "Continuar"
+    window.continuarApp = function() {
+      debug("Continuant cap a tasques");
+      showScreen('screen-tasques');
+      carregarTasques();
+    };
+
+    // Afegir tasca
+    window.afegirTasca = async function() {
+      const user = auth.currentUser;
+      const text = document.getElementById("novaTasca").value;
+      debug("Afegint tasca: " + text);
+      if (user && text) {
+        try {
+          await addDoc(collection(db, "tasques"), { uid: user.uid, text });
+          document.getElementById("novaTasca").value = "";
+          carregarTasques();
+        } catch (error) {
+          debug("Error guardar tasca: " + error.message);
+          alert("Error al guardar la tasca: " + error.message);
         }
-      } catch (e) {
-        alert('Error login: ' + (e.message || e));
       }
     };
 
-    window.logout = async function(){
+    // Carregar tasques
+    window.carregarTasques = async function() {
+      const user = auth.currentUser;
+      const llista = document.getElementById("llistaTasques");
+      llista.innerHTML = "";
+      if (user) {
+        const q = query(collection(db, "tasques"), where("uid", "==", user.uid));
+        const snapshot = await getDocs(q);
+        snapshot.forEach(docSnap => {
+          const li = document.createElement("li");
+          li.textContent = docSnap.data().text;
+          llista.appendChild(li);
+        });
+        debug("Tasques carregades: " + snapshot.size);
+      }
+    };
+
+    // Logout
+    window.logout = async function() {
       await signOut(auth);
-      currentUser = null;
-      profile = null;
+      debug("Sessió tancada");
       showScreen('screen-inici');
     };
-
-    // Controlar canvi d'estat (persistència)
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        currentUser = user;
-        // llegir perfil
-        const pDoc = await getDoc(doc(db,'users',currentUser.uid));
-        if (pDoc.exists()){
-          profile = pDoc.data();
-        } else {
-          // perfil bàsic si no existeix
-          profile = { idioma:'ca', configuracioFeta:false };
-          await setDoc(doc(db,'users',currentUser.uid), profile);
-        }
-        // si perfil ja configurat → directament al panell
-        if (profile.configuracioFeta){
-          idiomaSeleccionat = profile.idioma || 'ca';
-          showScreen('screen-panel');
-          renderPanel();
-        } else {
-          // si no està fet → mostrar idioma o passar a configuració
-          idiomaSeleccionat = profile.idioma || 'ca';
-          showScreen('screen-idioma');
-        }
-      } else {
-        // no hi ha usuari
-        currentUser = null;
-        profile = null;
-        showScreen('screen-inici');
-      }
-    });
-
-    /* ---------- Onboarding idioma ---------- */
-    window.seleccionarIdioma = async function(lang){
-      idiomaSeleccionat = lang;
-      // mostrar botó continuar
-      $('btnContinuarIdioma').style.display = 'inline-block';
-      // guardar en memoria i a perfil si existeix
-      if (currentUser){
-        try{
-          await setDoc(doc(db,'users',currentUser.uid), { idioma: lang }, { merge: true });
-        }catch(e){ console.warn('No s’ha pogut guardar idioma', e); }
-      }
-    };
-    window.continuarDespresIdioma = function(){
-      // anem a configurar si no està feta, si ja està feta anem al panell
-      if (profile && profile.configuracioFeta){
-        showScreen('screen-panel');
-        renderPanel();
-      } else {
-        renderConditionsGrid();
-        loadConfigLists(); // carregar llistes si ja hi ha alguna cosa
-        showScreen('screen-config');
-      }
-    };
-
-    /* ---------- CONFIG: afegir medicacions, cures, cites, condicions ---------- */
-
-    // Afegir medicació a Firestore (subcollection users/{uid}/medicacions)
-    window.afegirMedicacio = async function(){
-      if (!currentUser) return alert('Has d\'iniciar sessió.');
-      const nom = $('medNom').value.trim();
-      const dosi = $('medDosi').value.trim();
-      const hora = $('medHora').value.trim();
-      if (!nom || !hora){ alert('Introdueix nom i hora'); return; }
-      try{
-        await addDoc(collection(db, 'users', currentUser.uid, 'medicacions'), { nom, dosi, hora });
-        $('medNom').value=''; $('medDosi').value=''; $('medHora').value='';
-        await loadConfigLists();
-      }catch(e){ alert('Error afegir medicació: ' + e.message); }
-    };
-
-    window.afegirCura = async function(){
-      if (!currentUser) return alert('Has d\'iniciar sessió.');
-      const nom = $('curaNom').value.trim();
-      const freq = $('curaFreq').value;
-      if (!nom){ alert('Nom cura'); return; }
-      try{
-        await addDoc(collection(db, 'users', currentUser.uid, 'cures'), { nom, freq });
-        $('curaNom').value='';
-        await loadConfigLists();
-      }catch(e){ alert('Error afegir cura: ' + e.message); }
-    };
-
-    window.afegirCita = async function(){
-      if (!currentUser) return alert('Has d\'iniciar sessió.');
-      const data = $('citaData').value;
-      const hora = $('citaHora').value;
-      const lloc = $('citaLloc').value.trim();
-      if (!data || !hora || !lloc) { alert('Indica data, hora i lloc'); return; }
-      try{
-        await addDoc(collection(db, 'users', currentUser.uid, 'cites'), { data, hora, lloc });
-        $('citaData').value=''; $('citaHora').value=''; $('citaLloc').value='';
-        await loadConfigLists();
-      }catch(e){ alert('Error afegir cita: ' + e.message); }
-    };
-
-    // Guardar condicions seleccionades
-    window.guardarConfiguracio = async function(){
-      if (!currentUser) return alert('Has d\'iniciar sessió.');
-      // llegir condicions marcades
-      const selected = Array.from(document.querySelectorAll('.cond-checkbox')).filter(i=>i.checked).map(i=>i.value);
-      try{
-        // Desar condicions com a array
-        await setDoc(doc(db, 'users', currentUser.uid), { configuracioFeta: true, idioma: idiomaSeleccionat || 'ca', conditions: selected }, { merge: true });
-        profile = Object.assign(profile || {}, { configuracioFeta:true, idioma:idiomaSeleccionat || 'ca', conditions:selected });
-        alert('Configuració desada. Anem al panell.');
-        showScreen('screen-panel');
-        renderPanel();
-      }catch(e){ alert('Error desar configuració: ' + e.message); }
-    };
-
-    // Render de les llistes de configuració (medicacions / cures / cites / condicions)
-    async function loadConfigLists(){
-      if (!currentUser) return;
-      // medicacions
-      const medList = $('medList'); medList.innerHTML='';
-      const medsSnap = await getDocs(collection(db, 'users', currentUser.uid, 'medicacions'));
-      medsSnap.forEach(d=>{
-        const data = d.data();
-        const el = document.createElement('div'); el.className='list-item';
-        el.innerHTML = `<div><strong>${data.nom}</strong><div class="small">${data.dosi || ''} · ${data.hora}</div></div>
-                        <div><button class="btn ghost" onclick="eliminarDoc('${d.ref.path}')">Eliminar</button></div>`;
-        medList.appendChild(el);
-      });
-
-      // cures
-      const curaList = $('curaList'); curaList.innerHTML='';
-      const curesSnap = await getDocs(collection(db, 'users', currentUser.uid, 'cures'));
-      curesSnap.forEach(d=>{
-        const data = d.data();
-        const el = document.createElement('div'); el.className='list-item';
-        el.innerHTML = `<div><strong>${data.nom}</strong><div class="small">${data.freq}</div></div>
-                        <div><button class="btn ghost" onclick="eliminarDoc('${d.ref.path}')">Eliminar</button></div>`;
-        curaList.appendChild(el);
-      });
-
-      // cites
-      const citaList = $('citaList'); citaList.innerHTML='';
-      const citesSnap = await getDocs(collection(db, 'users', currentUser.uid, 'cites'));
-      citesSnap.forEach(d=>{
-        const data = d.data();
-        const el = document.createElement('div'); el.className='list-item';
-        el.innerHTML = `<div><strong>${data.data} ${data.hora}</strong><div class="small">${data.lloc}</div></div>
-                        <div><button class="btn ghost" onclick="eliminarDoc('${d.ref.path}')">Eliminar</button></div>`;
-        citaList.appendChild(el);
-      });
-
-      // condicions: render grid (les definim a CONDITIONS)
-      renderConditionsGrid();
-    }
-
-    // eliminar document per path (simple helper)
-    window.eliminarDoc = async function(path){
-      if (!confirm('Eliminar?')) return;
-      try{
-        await deleteDoc(docFromPath(path));
-        await loadConfigLists();
-      }catch(e){ alert('Error eliminar: ' + e.message); }
-    };
-
-    // helper per convertir "/databases/.../documents/users/UID/medicacions/ID" al doc() — però com usamos refs, ja hi arriba directament.
-    function docFromPath(path){
-      // No implementem parsing complex; en lloc d'això només fem servir la referència a d.ref.path que ja hem usat.
-      // Però per seguretat intentem retornar doc(db,...segments)
-      const segs = path.split('/');
-      const idx = segs.indexOf('users');
-      if (idx >= 0){
-        const parts = segs.slice(idx); // users, uid, subcol, id
-        return doc(db, ...parts);
-      }
-      throw new Error('Path no vàlid per eliminar: ' + path);
-    }
-
-    // Render del grid de condicions (on es marquen)
-    function renderConditionsGrid(){
-      const el = $('conditionsGrid'); el.innerHTML='';
-      CONDITIONS.forEach(c=>{
-        const id = 'cond_' + c.key;
-        const wrapper = document.createElement('label');
-        wrapper.style.display = 'block';
-        wrapper.style.cursor = 'pointer';
-        wrapper.innerHTML = `<input type="checkbox" class="cond-checkbox" id="${id}" value="${c.key}" style="margin-right:8px" /> ${c.label}`;
-        el.appendChild(wrapper);
-      });
-      // si profile té conditions, marcar-les
-      if (profile && profile.conditions){
-        profile.conditions.forEach(k=>{
-          const elc = document.querySelector(`.cond-checkbox[value="${k}"]`);
-          if (elc) elc.checked = true;
-        });
-      }
-    }
-
-    /* ---------- PANELL DEL DIA: mostrar medicacions, cures, cites, hàbits ---------- */
-
-    // Rendeix panell segons la configuració a Firestore i hàbits derivats
-    async function renderPanel(){
-      if (!currentUser) return;
-      $('pill-user').innerText = currentUser.email;
-      $('pill-date').innerText = (new Date()).toLocaleDateString();
-
-      // carregar medicacions
-      const panelMed = $('panel-medicacions'); panelMed.innerHTML='';
-      const medsSnap = await getDocs(collection(db, 'users', currentUser.uid, 'medicacions'));
-      medsSnap.forEach(d=>{
-        const data = d.data();
-        const id = d.id;
-        const el = document.createElement('div'); el.className='list-item';
-        el.innerHTML = `<div><strong>${data.nom}</strong><div class="small">${data.dosi || ''} · ${data.hora}</div></div>
-                        <div><input type="checkbox" onchange="marcarItem('medicacio','${id}','${escapeHtml(data.nom)}',this)" /></div>`;
-        panelMed.appendChild(el);
-      });
-
-      // carregar cures
-      const panelCures = $('panel-cures'); panelCures.innerHTML='';
-      const curesSnap = await getDocs(collection(db, 'users', currentUser.uid, 'cures'));
-      curesSnap.forEach(d=>{
-        const data = d.data(); const id = d.id;
-        const el = document.createElement('div'); el.className='list-item';
-        el.innerHTML = `<div><strong>${data.nom}</strong><div class="small">${data.freq}</div></div>
-                        <div><input type="checkbox" onchange="marcarItem('cura','${id}','${escapeHtml(data.nom)}',this)" /></div>`;
-        panelCures.appendChild(el);
-      });
-
-      // carregar cites (mostrar properes ordenades)
-      const panelCites = $('panel-cites'); panelCites.innerHTML='';
-      const citesSnap = await getDocs(collection(db, 'users', currentUser.uid, 'cites'));
-      // convertim a array amb data per ordenar
-      const citesArr = [];
-      citesSnap.forEach(d=>{ const data=d.data(); citesArr.push(Object.assign({id:d.id},data)); });
-      citesArr.sort((a,b)=> (a.data + a.hora) < (b.data + b.hora) ? -1 : 1);
-      citesArr.forEach(c=>{
-        const el = document.createElement('div'); el.className='list-item';
-        el.innerHTML = `<div><strong>${c.data} ${c.hora}</strong><div class="small">${c.lloc}</div></div>
-                        <div><button class="btn ghost" onclick="marcarItem('cita','${c.id}','${escapeHtml(c.lloc)}',null,true)">Info</button></div>`;
-        panelCites.appendChild(el);
-      });
-
-      // hàbits derivats de condicions: llegim profile.conditions (si no, llegim del perfil Firestore)
-      let conditions = (profile && profile.conditions) ? profile.conditions : [];
-      if (!conditions || conditions.length === 0){
-        // intentar recarregar perfil
-        const pDoc = await getDoc(doc(db,'users',currentUser.uid));
-        if (pDoc.exists()) conditions = pDoc.data().conditions || [];
-      }
-      const panelHab = $('panel-habits'); panelHab.innerHTML='';
-      // per cada condició, mirem CONDITION_MAP
-      const habitSet = [];
-      conditions.forEach(k=>{
-        const map = CONDITION_MAP[k];
-        if (map && map.habits){
-          map.habits.forEach(h => {
-            // h pot ser objecte
-            if (typeof h === 'string') habitSet.push({id:h,label:h});
-            else habitSet.push({id:h.id || h.label, label:h.label});
-          });
-        }
-      });
-      // eliminem duplicats per id
-      const uniq = {}; habitSet.forEach(h=> uniq[h.id] = h);
-      Object.values(uniq).forEach(h=>{
-        const id = h.id;
-        const el = document.createElement('div'); el.className='list-item';
-        el.innerHTML = `<div><strong>${h.label}</strong><div class="small">Registra valor si escau</div></div>
-                        <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
-                          <input id="val_${id}" placeholder="Valor (p.ex. 145/65)" style="width:160px;padding:8px;border-radius:8px;font-size:14px" />
-                          <div><button class="btn" onclick="marcarHabit('${id}','${escapeHtml(h.label)}')">Guardar</button></div>
-                        </div>`;
-        panelHab.appendChild(el);
-      });
-    }
-
-    // marcatge d'item (medicació / cura). Si checkbox null i info=true => no marcar, només info
-    window.marcarItem = async function(tipo,id,nombre, checkbox=null, info=false){
-      // info=true: només mostra alert amb info (per cites)
-      if (!currentUser) return alert('Has d\'iniciar sessió');
-      if (info){
-        alert('Cita: ' + nombre);
-        return;
-      }
-      const nowTs = new Date().toISOString();
-      try{
-        // si checkbox està marcat, creem registre
-        if (checkbox && checkbox.checked) {
-          await addDoc(collection(db,'users', currentUser.uid, 'registres'), {
-            tipus: tipo, itemId: id, itemName: nombre, createdAt: serverTimestamp()
-          });
-        } else if (checkbox && !checkbox.checked) {
-          // si es desmarca no fem res (opcional: podríem marcar un registre de "desfeta")
-        }
-      }catch(e){ alert('Error al crear registre: ' + e.message); }
-    };
-
-    // marcar i guardar un hàbit amb valor
-    window.marcarHabit = async function(habitId,label){
-      if (!currentUser) return alert('Has d\'iniciar sessió');
-      const inpid = $('val_' + habitId);
-      const val = inpid ? inpid.value.trim() : '';
-      if (!val){ if(!confirm('Vols marcar sense valor?')) return; }
-      try{
-        await addDoc(collection(db,'users',currentUser.uid,'registres'), {
-          tipus: 'habit', habitId, habitLabel: label, valor: val, createdAt: serverTimestamp()
-        });
-        if (inpid) inpid.value = '';
-        alert('Registre desat');
-      }catch(e){ alert('Error guardar hàbit: ' + e.message); }
-    };
-
-    /* ---------- Utilities ---------- */
-    function escapeHtml(str){
-      return (str||'').replace(/'/g,"\\'").replace(/\"/g,'&quot;');
-    }
-
-    /* ---------- Inicialitzacions UI ---------- */
-    // Generar grid condicions al carrega la pàgina
-    renderConditionsGrid();
-
-    // Quan entres a configuració si hi ha dades carreguem
-    // (ja cridem loadConfigLists quan es mostra la pantalla en flow)
-    // Però també exposem la funció si l'usuari entra manualment
-    window.loadConfigLists = loadConfigLists;
-
-    // Quan l'usuari torna al panell, recarregar
-    window.renderPanel = renderPanel;
-
   </script>
 </body>
 </html>
